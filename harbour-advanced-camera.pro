@@ -33,8 +33,9 @@ DISTFILES += rpm/harbour-advanced-camera.changes.in \
     rpm/harbour-advanced-camera.spec \
     rpm/harbour-advanced-camera.yaml \
     translations/*.ts \
-    harbour-advanced-camera.desktop \
-    qml/harbour-advanced-camera.qml \
+    harbour-advanced-camera.desktop
+    
+QML_FILES += qml/harbour-advanced-camera.qml \
     qml/components/DockedListView.qml \
     qml/components/IconSwitch.qml \
     qml/components/RoundButton.qml \
@@ -75,3 +76,13 @@ HEADERS += \
     src/storagemodel.h
 
 LIBS += -ldl
+
+# Deployment
+installPath = $$[DEPLOYMENT_PATH]/qml
+
+OTHER_FILES += $$QML_FILES
+
+qml_files.path = $$installPath
+qml_files.files = $$QML_FILES
+
+INSTALLS += qml_files
