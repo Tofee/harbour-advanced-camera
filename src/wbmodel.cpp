@@ -43,7 +43,7 @@ void WbModel::setCamera(QObject *camera)
 
         beginResetModel();
         for (int c = (int)QCameraImageProcessing::WhiteBalanceAuto;
-                c <= (int)QCameraImageProcessing::WhiteBalanceWarmFluorescent; c++) {
+                c <= (int)QCameraImageProcessing::WhiteBalanceSunset; c++) {
             if (m_camera->imageProcessing()->isWhiteBalanceModeSupported((QCameraImageProcessing::WhiteBalanceMode)c)) {
                 qDebug() << "Found support for" << (QCameraImageProcessing::WhiteBalanceMode)c;
                 m_wbModes[(QCameraImageProcessing::WhiteBalanceMode)c] = wbName((QCameraImageProcessing::WhiteBalanceMode)c);
@@ -89,9 +89,11 @@ QString WbModel::wbName(QCameraImageProcessing::WhiteBalanceMode wb) const
     case QCameraImageProcessing::WhiteBalanceSunset:
         name = tr("Sunset");
         break;
+#ifdef SAILFISH
     case QCameraImageProcessing::WhiteBalanceWarmFluorescent:
         name = tr("Warm Fluorescent");
         break;
+#endif
     default:
         name = tr("Unknown");
         break;

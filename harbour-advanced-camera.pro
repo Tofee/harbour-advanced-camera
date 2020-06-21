@@ -14,7 +14,7 @@ TARGET = harbour-advanced-camera
 
 CONFIG += sailfishapp
 
-QT += multimedia
+QT += multimedia quick
 
 SOURCES += src/harbour-advanced-camera.cpp \
     src/effectsmodel.cpp \

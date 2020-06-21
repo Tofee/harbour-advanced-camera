@@ -42,7 +42,7 @@ void ExposureModel::setCamera(QObject *camera)
         m_camera = cam;
 
         beginResetModel();
-        for (int c = (int)QCameraExposure::ExposureAuto; c <= (int)QCameraExposure::ExposureHDR; c++) {
+        for (int c = (int)QCameraExposure::ExposureAuto; c <= (int)QCameraExposure::ExposureBarcode; c++) {
             if (m_camera->exposure()->isExposureModeSupported((QCameraExposure::ExposureMode)c)) {
                 qDebug() << "Found support for" << (QCameraExposure::ExposureMode)c;
                 m_exposures[(QCameraExposure::ExposureMode)c] = exposureName((QCameraExposure::ExposureMode)c);
@@ -70,9 +70,6 @@ QString ExposureModel::exposureName(QCameraExposure::ExposureMode e) const
     case QCameraExposure::ExposureManual:
         name = tr("Off");
         break;
-    case QCameraExposure::ExposureAR:
-        name = tr("Augmented Reality");
-        break;
     case QCameraExposure::ExposureBacklight:
         name = tr("Backlight");
         break;
@@ -88,12 +85,17 @@ QString ExposureModel::exposureName(QCameraExposure::ExposureMode e) const
     case QCameraExposure::ExposureFireworks:
         name = tr("Fireworks");
         break;
+#ifdef SAILFISH
     case QCameraExposure::ExposureFlowers:
         name = tr("Flowers");
         break;
     case QCameraExposure::ExposureHDR:
         name = tr("HDR");
         break;
+    case QCameraExposure::ExposureAR:
+        name = tr("Augmented Reality");
+        break;
+#endif
     case QCameraExposure::ExposureLandscape:
         name = tr("Landscape");
         break;
@@ -155,9 +157,6 @@ QString ExposureModel::iconName(QCameraExposure::ExposureMode e) const
     case QCameraExposure::ExposureManual:
         name = "none";
         break;
-    case QCameraExposure::ExposureAR:
-        name = "ar";
-        break;
     case QCameraExposure::ExposureBacklight:
         name = "backlight";
         break;
@@ -173,12 +172,17 @@ QString ExposureModel::iconName(QCameraExposure::ExposureMode e) const
     case QCameraExposure::ExposureFireworks:
         name = "fireworks";
         break;
+#ifdef SAILFISH
+    case QCameraExposure::ExposureAR:
+        name = "ar";
+        break;
     case QCameraExposure::ExposureFlowers:
         name = "flowers";
         break;
     case QCameraExposure::ExposureHDR:
         name = "hdr";
         break;
+#endif
     case QCameraExposure::ExposureLandscape:
         name = "landscape";
         break;

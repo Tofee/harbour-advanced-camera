@@ -8,7 +8,6 @@
 #include <QQuickItem>
 #include <QSortFilterProxyModel>
 
-#include <sailfishapp.h>
 #include "effectsmodel.h"
 #include "exposuremodel.h"
 #include "isomodel.h"
@@ -32,7 +31,8 @@ int main(int argc, char *argv[])
     //
     // To display the view, call "show()" (will show fullscreen on device).
 
-    QGuiApplication *app = SailfishApp::application(argc, argv);
+    QGuiApplication *app = new QGuiApplication(argc, argv);
+    app->setApplicationName("harbour_advanced_camera");
 
     qmlRegisterType<EffectsModel>("uk.co.piggz.harbour_advanced_camera", 1, 0, "EffectsModel");
     qmlRegisterType<ExposureModel>("uk.co.piggz.harbour_advanced_camera", 1, 0, "ExposureModel");
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
     sortedResolutionModel.setSortRole(ResolutionModel::ResolutionMpx);
     sortedResolutionModel.sort(0, Qt::DescendingOrder);
 
-    QQuickView *view = SailfishApp::createView();
+    QQuickView *view = new QQuickView();
 
     ResourceHandler handler;
     handler.acquire();
@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
     FSOperations fsOperations;
     view->rootContext()->setContextProperty("fsOperations", &fsOperations);
 
-    view->setSource(SailfishApp::pathTo("qml/harbour-advanced-camera.qml"));
+    view->setSource(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "qml/harbour-advanced-camera.qml"));
 
     QObject::connect(view, &QQuickView::focusObjectChanged, &handler,
                      &ResourceHandler::handleFocusChange);

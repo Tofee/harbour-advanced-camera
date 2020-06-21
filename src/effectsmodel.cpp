@@ -43,7 +43,7 @@ void EffectsModel::setCamera(QObject *camera)
 
         beginResetModel();
         for (int c = (int)QCameraImageProcessing::ColorFilterNone;
-                c <= (int)QCameraImageProcessing::ColorFilterNeon; c++) {
+                c <= (int)QCameraImageProcessing::ColorFilterAqua; c++) {
             if (m_camera->imageProcessing()->isColorFilterSupported((QCameraImageProcessing::ColorFilter)c)) {
                 qDebug() << "Found support for" << (QCameraImageProcessing::ColorFilter)c;
                 m_effects[(QCameraImageProcessing::ColorFilter)c] = effectName((QCameraImageProcessing::ColorFilter)c);
@@ -89,6 +89,7 @@ QString EffectsModel::effectName(QCameraImageProcessing::ColorFilter c) const
     case QCameraImageProcessing::ColorFilterWhiteboard:
         name = tr("Whiteboard");
         break;
+#ifdef SAILFISH
     case QCameraImageProcessing::ColorFilterEmboss:
         name = tr("Emboss");
         break;
@@ -98,6 +99,7 @@ QString EffectsModel::effectName(QCameraImageProcessing::ColorFilter c) const
     case QCameraImageProcessing::ColorFilterNeon:
         name = tr("Neon");
         break;
+#endif
     default:
         name = "Unknown";
         break;
