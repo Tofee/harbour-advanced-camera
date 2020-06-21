@@ -18,14 +18,8 @@ SOURCES += src/harbour-advanced-camera.cpp \
 DISTFILES += translations/*.ts 
     
 QML_FILES += qml/harbour-advanced-camera.qml \
-    qml/components/DockedListView.qml \
-    qml/components/IconSwitch.qml \
-    qml/components/RoundButton.qml \
-    qml/cover/CoverPage.qml \
-    qml/pages/CameraUI.qml \
-    qml/pages/GalleryUI.qml \
-    qml/pages/Settings.qml \
-    qml/pages/SettingsOverlay.qml
+    qml/components/*.qml \
+    qml/pages/*.qml
 
 
 # German translation is enabled as an example. If you aren't

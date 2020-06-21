@@ -1,7 +1,7 @@
-import QtQuick 2.0
-import Sailfish.Silica 1.0
+import QtQuick 2.15
+import QtQuick.Controls 2.15
 
-DockedPanel {
+Dialog {
     id: panel
 
     property alias model: listView.model
@@ -23,16 +23,16 @@ DockedPanel {
         color: Theme.colorScheme === Theme.LightOnDark ? "black" : "white"
         opacity: 0.7
 
-        SilicaListView {
+        ListView {
             id: listView
             anchors.fill: parent
             VerticalScrollDecorator {
             }
             clip: true
 
-            delegate: ListItem {
+            delegate: Item {
                 width: ListView.view.width
-                height: Theme.itemSizeSmall
+                height: 30 // Theme.itemSizeSmall
                 highlighted: value === selectedItem
 
                 Label {
@@ -43,7 +43,7 @@ DockedPanel {
                         rightMargin: Theme.horizontalPageMargin
                         verticalCenter: parent.verticalCenter
                     }
-                    color: highlighted ? Theme.highlightColor : Theme.primaryColor
+                    color: highlighted ? Theme.highlightColor : "lightblue" // Theme.primaryColor
                     text: name
                     truncationMode: TruncationMode.Fade
                 }

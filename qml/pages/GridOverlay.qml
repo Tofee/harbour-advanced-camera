@@ -1,5 +1,4 @@
-import QtQuick 2.0
-import Sailfish.Silica 1.0
+import QtQuick 2.15
 
 Item {
     id: root
@@ -41,12 +40,12 @@ Item {
 
                 color: "#88ffffff"
             }
-
+/*
             OpacityRampEffect {
                 sourceItem: left
                 direction: OpacityRamp.RightToLeft
             }
-
+*/
             Rectangle {
                 id: right
                 width: parent.width / 2
@@ -56,11 +55,12 @@ Item {
 
                 color: "#88ffffff"
             }
-
+/*
             OpacityRampEffect {
                 sourceItem: right
                 direction: OpacityRamp.LeftToRight
             }
+*/
         }
     }
 
@@ -79,12 +79,12 @@ Item {
 
                 color: "#88ffffff"
             }
-
+/*
             OpacityRampEffect {
                 sourceItem: up
                 direction: OpacityRamp.BottomToTop
             }
-
+*/
             Rectangle {
                 id: bottom
                 width: 5
@@ -94,11 +94,12 @@ Item {
 
                 color: "#88ffffff"
             }
-
+/*
             OpacityRampEffect {
                 sourceItem: bottom
                 direction: OpacityRamp.TopToBottom
             }
+*/
         }
     }
 }

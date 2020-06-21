@@ -1,16 +1,14 @@
-import QtQuick 2.0
-import Sailfish.Silica 1.0
-import QtMultimedia 5.6
-import QtSensors 5.0
-import Nemo.KeepAlive 1.2
-import uk.co.piggz.harbour_advanced_camera 1.0
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Window 2.15
+import QtMultimedia 5.15
+import QtSensors 5.15
+
+import harbour_advanced_camera 1.0
 import "../components/"
 
 Page {
     id: page
-
-    // The effective value will be restricted by ApplicationWindow.allowedOrientations
-    allowedOrientations: Orientation.All
 
     property alias camera: camera
     property bool _cameraReload: false
@@ -21,6 +19,8 @@ Page {
     property bool _manualModeSelected: false
     readonly property int zoomStepSize: 5
     property int controlsRotation: 0
+
+    property int orientation: Qt.PortraitOrientation
 
     // Use Orientation Sensor to sense orientation change
     OrientationSensor {
@@ -33,10 +33,11 @@ Page {
             }
         }
     }
-
+/*
     DisplayBlanking {
         preventBlanking: camera.videoRecorder.recorderState === CameraRecorder.RecordingState
     }
+*/
 
     // Orientation sensors for primary (back camera) & secondary (front camera)
     readonly property var _rotationValues: {
@@ -49,13 +50,13 @@ Page {
     readonly property int viewfinderOrientation: {
         var rotation = 0
         switch (orientation) {
-        case Orientation.Landscape:
+        case Qt.LandscapeOrientation:
             rotation = 90
             break
-        case Orientation.PortraitInverted:
+        case Qt.InvertedPortraitOrientation:
             rotation = 180
             break
-        case Orientation.LandscapeInverted:
+        case Qt.InvertedLandscapeOrientation:
             rotation = 270
             break
         }
@@ -89,11 +90,6 @@ Page {
     }
 
     focus: true
-
-    defaultOrientationTransition: Transition {
-        NumberAnimation {
-        }
-    }
 
     Camera {
         id: camera
@@ -190,7 +186,7 @@ Page {
         onCameraStatusChanged: {
             console.log("Camera status:", cameraStatus)
 
-            if (cameraStatus === Camera.StartingStatus) {
+            if (cameraStatus === Camera.ActiveStatus) {
                 settingsOverlay.setCamera(camera)
             }
 
@@ -220,10 +216,11 @@ Page {
     Item {
         id: controlsContainer
         rotation: _rotationValues["ui"][page.orientation]
-        width: page.orientation === Orientation.Portrait
-               || page.orientation === Orientation.PortraitInverted ? parent.height : parent.width
-        height: page.orientation === Orientation.Portrait
-                || page.orientation === Orientation.PortraitInverted ? parent.width : parent.height
+
+        width: page.orientation === Qt.PortraitOrientation
+               || page.orientation === Qt.InvertedPortraitOrientation ? parent.height : parent.width
+        height: page.orientation === Qt.PortraitOrientation
+                || page.orientation === Qt.InvertedPortraitOrientation ? parent.width : parent.height
         anchors.centerIn: parent
 
         GridOverlay {
@@ -241,8 +238,8 @@ Page {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
             width: parent.width * 0.75
-            minimumValue: 1
-            maximumValue: camera.maximumDigitalZoom
+            property real minimumValue: 1
+            property real maximumValue: camera.maximumDigitalZoom
             value: camera.digitalZoom
             stepSize: zoomStepSize
             rotation: {
@@ -265,7 +262,7 @@ Page {
             Connections {
                 target: camera
 
-                onDigitalZoomChanged: {
+                function digitalZoomChanged() {
                     zoomSlider.value = camera.digitalZoom
                 }
             }
@@ -286,13 +283,13 @@ Page {
 
             anchors.verticalCenter: parent.verticalCenter
             anchors.right: parent.right
-            anchors.rightMargin: Theme.paddingMedium
+            anchors.rightMargin: 60 // Theme.paddingMedium
 
-            size: Theme.itemSizeLarge
+            size: 100 //Theme.itemSizeLarge
             rotation: page.controlsRotation
 
             image: shutterIcon()
-            icon.anchors.margins: Theme.paddingSmall
+            anchors.margins: 30 // Theme.paddingSmall
             onClicked: doShutter()
         }
 
@@ -342,13 +339,13 @@ Page {
                     return 0
             }
 
-            spacing: Theme.paddingMedium
+            spacing: 60 // Theme.paddingMedium
             rotation: page.controlsRotation
 
             Label {
                 property bool forceUpdate: false
                 id: lblResolution
-                color: Theme.lightPrimaryColor
+                color: "lightgray" // Theme.lightPrimaryColor
                 text: (forceUpdate
                        || !forceUpdate) ? settings.sizeToStr(
                                               (settings.global.captureMode === "video" ? camera.videoRecorder.resolution : camera.imageCapture.resolution)) : ""
@@ -357,7 +354,7 @@ Page {
             Label {
                 id: lblRecordTime
                 visible: settings.global.captureMode === "video"
-                color: Theme.lightPrimaryColor
+                color: "lightgray" // Theme.lightPrimaryColor
                 //text: Qt.formatDateTime(new Date(camera.videoRecorder.duration), "hh:mm:ss") //Doest work as return 01:00:00 for 0
                 text: msToTime(camera.videoRecorder.duration)
             }
@@ -375,12 +372,12 @@ Page {
             enabled: visible
 
             anchors.top: btnCameraSwitch.bottom
-            anchors.bottomMargin: Theme.paddingMedium
+            anchors.bottomMargin: 60 // Theme.paddingMedium
             anchors.right: parent.right
-            anchors.rightMargin: Theme.paddingMedium
-            icon.rotation: page.controlsRotation
+            anchors.rightMargin: 60 // Theme.paddingMedium
+            rotation: page.controlsRotation
 
-            size: Theme.itemSizeSmall
+            size: 30 // Theme.itemSizeSmall
 
             image: "image://theme/icon-m-image"
 
@@ -396,12 +393,12 @@ Page {
             id: btnCameraSwitch
             icon.source: "image://theme/icon-camera-switch"
             visible: settings.global.cameraCount > 1
-            icon.rotation: page.controlsRotation
+            rotation: page.controlsRotation
             anchors {
                 top: parent.top
-                topMargin: Theme.paddingMedium
+                topMargin: 60 // Theme.paddingMedium
                 right: parent.right
-                rightMargin: Theme.paddingMedium
+                rightMargin: 60 // Theme.paddingMedium
             }
             onClicked: {
                 console.log("Setting temp resolution")
@@ -417,13 +414,13 @@ Page {
         IconSwitch {
             id: btnModeSwitch
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: Theme.paddingMedium
+            anchors.bottomMargin: 60 // Theme.paddingMedium
             anchors.right: parent.right
             anchors.rightMargin: (rotation === 90
-                                  || rotation === 270) ? Theme.paddingLarge
-                                                         * 2 : Theme.paddingMedium
+                                  || rotation === 270) ? 100 /* Theme.paddingLarge */
+                                                         * 2 : 60 /* Theme.paddingMedium */
             rotation: page.controlsRotation
-            width: Theme.itemSizeSmall
+            width: 30 // Theme.itemSizeSmall
 
             icon1Source: "image://theme/icon-camera-camera-mode"
             icon2Source: "image://theme/icon-camera-video"
@@ -489,7 +486,7 @@ Page {
 
     Rectangle {
         id: focusCircle
-        height: (camera.lockStatus === Camera.Locked) ? Theme.itemSizeSmall : Theme.itemSizeMedium
+        height: (camera.lockStatus === Camera.Locked) ? 30 : 100
         width: height
         radius: width / 2
         border.width: 4
@@ -547,7 +544,7 @@ Page {
     Connections {
         target: window
 
-        onActiveFocusChanged: {
+        function  activeFocusChanged() {
             if (!window.activeFocus) {
                 camera.stop()
             } else {
@@ -560,7 +557,7 @@ Page {
     Connections {
         target: pageStack
 
-        onDepthChanged: {
+        function depthChanged() {
             if (pageStack.depth === 1) {
                 console.log("Calling camera.start() due to pageStack change")
                 camera.start()
@@ -707,10 +704,10 @@ Page {
         if (supportedResolutions.length > 0) {
             //TODO find the best resolution for the correct aspect ratio
             //when we fix supportedViewfinderResolutions()
-            return supportedResolutions[0]
+            return Qt.size(supportedResolutions[supportedResolutions.length-1].height, supportedResolutions[supportedResolutions.length-1].width);
         }
 
-        return Qt.size(Screen.height, Screen.width)
+        return Qt.size(window.height, window.width)
     }
 
     function doShutter() {

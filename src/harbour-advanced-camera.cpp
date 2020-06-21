@@ -21,26 +21,16 @@
 
 int main(int argc, char *argv[])
 {
-    // SailfishApp::main() will display "qml/harbour-advanced-camera.qml", if you need more
-    // control over initialization, you can use:
-    //
-    //   - SailfishApp::application(int, char *[]) to get the QGuiApplication *
-    //   - SailfishApp::createView() to get a new QQuickView * instance
-    //   - SailfishApp::pathTo(QString) to get a QUrl to a resource file
-    //   - SailfishApp::pathToMainQml() to get a QUrl to the main QML file
-    //
-    // To display the view, call "show()" (will show fullscreen on device).
-
     QGuiApplication *app = new QGuiApplication(argc, argv);
     app->setApplicationName("harbour_advanced_camera");
 
-    qmlRegisterType<EffectsModel>("uk.co.piggz.harbour_advanced_camera", 1, 0, "EffectsModel");
-    qmlRegisterType<ExposureModel>("uk.co.piggz.harbour_advanced_camera", 1, 0, "ExposureModel");
-    qmlRegisterType<IsoModel>("uk.co.piggz.harbour_advanced_camera", 1, 0, "IsoModel");
-    qmlRegisterType<ResolutionModel>("uk.co.piggz.harbour_advanced_camera", 1, 0, "ResolutionModel");
-    qmlRegisterType<WbModel>("uk.co.piggz.harbour_advanced_camera", 1, 0, "WhiteBalanceModel");
-    qmlRegisterType<FocusModel>("uk.co.piggz.harbour_advanced_camera", 1, 0, "FocusModel");
-    qmlRegisterType<FlashModel>("uk.co.piggz.harbour_advanced_camera", 1, 0, "FlashModel");
+    qmlRegisterType<EffectsModel>("harbour_advanced_camera", 1, 0, "EffectsModel");
+    qmlRegisterType<ExposureModel>("harbour_advanced_camera", 1, 0, "ExposureModel");
+    qmlRegisterType<IsoModel>("harbour_advanced_camera", 1, 0, "IsoModel");
+    qmlRegisterType<ResolutionModel>("harbour_advanced_camera", 1, 0, "ResolutionModel");
+    qmlRegisterType<WbModel>("harbour_advanced_camera", 1, 0, "WhiteBalanceModel");
+    qmlRegisterType<FocusModel>("harbour_advanced_camera", 1, 0, "FocusModel");
+    qmlRegisterType<FlashModel>("harbour_advanced_camera", 1, 0, "FlashModel");
 
     ResolutionModel resolutionModel;
     QSortFilterProxyModel sortedResolutionModel;
@@ -60,13 +50,14 @@ int main(int argc, char *argv[])
     FSOperations fsOperations;
     view->rootContext()->setContextProperty("fsOperations", &fsOperations);
 
-    view->setSource(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "qml/harbour-advanced-camera.qml"));
+    view->setSource(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "/qml/harbour-advanced-camera.qml"));
 
     QObject::connect(view, &QQuickView::focusObjectChanged, &handler,
                      &ResourceHandler::handleFocusChange);
     QObject::connect(&fsOperations, &FSOperations::rescan, &storageModel,
                      &StorageModel::scan);
 
+    view->setResizeMode(QQuickView::SizeRootObjectToView);
     view->show();
 
     return app->exec();

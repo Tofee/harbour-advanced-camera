@@ -1,40 +1,41 @@
-import QtQuick 2.0
-import QtMultimedia 5.4
-import Nemo.Configuration 1.0
-import Sailfish.Silica 1.0
+import QtQuick 2.15
+import QtMultimedia 5.15
+// import Qt.labs.settings 1.0
 
 Item {
     property alias global: globalSettings
     property alias mode: modeSettings
     property alias jollaCamera: jollaCameraSettings
 
-    ConfigurationGroup {
+    // use Settings ?
+    QtObject {
         id: globalSettings
-        path: "/uk/co/piggz/harbour-advanced-camera"
+        //category: "/uk/co/piggz/harbour-advanced-camera"
         property int cameraCount: 2
         property string cameraId: "primary"
         property string captureMode: "image"
         property bool swapZoomControl: false
         property string gridMode: "none"
         property string storagePath: StandardPaths.home
-
-        ConfigurationGroup {
-            id: modeSettings
-            path: globalSettings.cameraId + "/" + globalSettings.captureMode
-
-            property int effect: CameraImageProcessing.ColorFilterNone
-            property int exposure: Camera.ExposureManual
-            property int flash: Camera.FlashOff
-            property int focus: CameraFocus.FocusAuto
-            property int iso: 0
-            property string resolution: ""
-            property int whiteBalance: CameraImageProcessing.WhiteBalanceAuto
-        }
     }
 
-    ConfigurationGroup {
+    QtObject {
+        id: modeSettings
+        //category: globalSettings.cameraId + "/" + globalSettings.captureMode
+        property string path: ""
+
+        property int effect: CameraImageProcessing.ColorFilterNone
+        property int exposure: Camera.ExposureManual
+        property int flash: Camera.FlashOff
+        property int focus: CameraFocus.FocusAuto
+        property int iso: 0
+        property string resolution: "2976x2976"
+        property int whiteBalance: CameraImageProcessing.WhiteBalanceAuto
+    }
+
+    QtObject {
         id: jollaCameraSettings
-        path: "/apps/jolla-camera/" + globalSettings.cameraId + "/image"
+        //category: "/apps/jolla-camera/" + globalSettings.cameraId + "/image"
 
         property string viewfinderResolution
         property string viewfinderResolution_16_9

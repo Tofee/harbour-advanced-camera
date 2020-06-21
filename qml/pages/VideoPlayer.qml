@@ -72,9 +72,9 @@ Page {
 
                 anchors {
                     top: parent.top
-                    topMargin: Theme.paddingMedium
+                    topMargin: 60 // Theme.paddingMedium
                     right: parent.right
-                    rightMargin: Theme.paddingMedium
+                    rightMargin: 60 // Theme.paddingMedium
                 }
 
                 onClicked: {
@@ -109,7 +109,7 @@ Page {
                 anchors {
                     horizontalCenter: parent.horizontalCenter
                     bottom: parent.bottom
-                    bottomMargin: Theme.paddingMedium
+                    bottomMargin: 60 // Theme.paddingMedium
                 }
 
                 Slider {

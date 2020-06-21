@@ -1,11 +1,12 @@
-import QtQuick 2.0
-import QtQuick.Layouts 1.0
-import QtMultimedia 5.4
-import Sailfish.Silica 1.0
-import uk.co.piggz.harbour_advanced_camera 1.0
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
+import QtMultimedia 5.15
+import harbour_advanced_camera 1.0
 import "../components/"
 
-Item {
+Pane {
+    visible: false
     anchors.fill: parent
     property int iconRotation: 0
     property bool panelOpen: panelEffects.expanded || panelExposure.expanded
@@ -21,20 +22,20 @@ Item {
         enabled: !panelOpen
 
         height: parent.height
-        width: 2 * Theme.itemSizeSmall + 4 * Theme.paddingMedium
+        width: 2 * 30 /*Theme.itemSizeSmall*/ + 4 * 60 /*Theme.paddingMedium*/
         anchors.left: parent.left
         anchors.top: parent.top
 
         Behavior on opacity {
-            FadeAnimation {
+            SmoothedAnimation {
             }
         }
 
         GridLayout {
             id: colButtons
             flow: GridLayout.TopToBottom
-            rowSpacing: Theme.paddingSmall
-            columnSpacing: Theme.paddingSmall
+            rowSpacing: 30 // Theme.paddingSmall
+            columnSpacing: 30 // Theme.paddingSmall
             rows: Math.floor(
                       height / (btnScene.height + rowSpacing)) //using the button height and not theme size incase we change the RoundButton size
 
@@ -42,13 +43,13 @@ Item {
                 top: parent.top
                 bottom: parent.bottom
                 left: parent.left
-                margins: Theme.paddingSmall
+                margins: 30 // Theme.paddingSmall
             }
 
             RoundButton {
                 id: btnScene
-                icon.color: Theme.primaryColor
-                icon.rotation: iconRotation
+                icon.color: "lightblue" // Theme.primaryColor
+               // icon.rotation: iconRotation
                 image: effectIcon()
 
                 onClicked: {
@@ -58,8 +59,8 @@ Item {
             RoundButton {
                 id: btnExposure
                 image: sceneModeIcon()
-                icon.color: Theme.primaryColor
-                icon.rotation: iconRotation
+                icon.color: "lightblue" // Theme.primaryColor
+               // icon.rotation: iconRotation
 
                 onClicked: {
                     panelExposure.show()
@@ -68,7 +69,7 @@ Item {
             RoundButton {
                 id: btnFocus
                 image: focusIcon()
-                icon.rotation: iconRotation
+              //  icon.rotation: iconRotation
 
                 onClicked: {
                     panelFocus.show()
@@ -76,8 +77,8 @@ Item {
             }
             RoundButton {
                 id: btnResolution
-                icon.color: Theme.primaryColor
-                icon.rotation: iconRotation
+                icon.color: "lightblue" // Theme.primaryColor
+               // icon.rotation: iconRotation
                 image: "../pics/icon-m-resolution.png"
 
                 onClicked: {
@@ -87,7 +88,7 @@ Item {
             RoundButton {
                 id: btnWhiteBalance
                 image: whiteBalanceIcon()
-                icon.rotation: iconRotation
+               // icon.rotation: iconRotation
 
                 onClicked: {
                     panelWhiteBalance.show()
@@ -96,7 +97,7 @@ Item {
             RoundButton {
                 id: btnFlash
                 image: flashIcon()
-                icon.rotation: iconRotation
+               // icon.rotation: iconRotation
 
                 onClicked: {
                     panelFlash.show()
@@ -105,8 +106,8 @@ Item {
 
             RoundButton {
                 id: btnIso
-                icon.color: Theme.primaryColor
-                icon.rotation: iconRotation
+                icon.color: "lightblue" // Theme.primaryColor
+               // icon.rotation: iconRotation
                 image: isoIcon()
 
                 onClicked: {
@@ -117,8 +118,8 @@ Item {
             RoundButton {
                 id: btnStorage
                 objectName: "btnStorage"
-                icon.color: Theme.primaryColor
-                icon.rotation: iconRotation
+                icon.color: "lightblue" // Theme.primaryColor
+              //  icon.rotation: iconRotation
                 image: "image://theme/icon-m-sd-card"
 
                 onClicked: {
@@ -129,8 +130,8 @@ Item {
 
             RoundButton {
                 id: btnGeneral
-                icon.color: Theme.primaryColor
-                icon.rotation: iconRotation
+                icon.color: "lightblue" // Theme.primaryColor
+               // icon.rotation: iconRotation
                 image: "image://theme/icon-m-developer-mode"
 
                 onClicked: {
@@ -140,13 +141,22 @@ Item {
         }
     }
 
-    DockedListView {
+    ListView {
         id: panelEffects
         model: modelEffects
-        selectedItem: settings.mode.effect
+        property var selectedItem: settings.mode.effect
         rotation: iconRotation
         width: (iconRotation === 90
                 || iconRotation === 270) ? parent.height : parent.width / 2
+
+        signal clicked(string value)
+        delegate: Text {
+            text: name
+            MouseArea {
+                anchors.fill: parent
+                onClicked: panelEffects.clicked(value)
+            }
+        }
 
         onClicked: {
             camera.imageProcessing.setColorFilter(value)
@@ -155,13 +165,22 @@ Item {
         }
     }
 
-    DockedListView {
+    ListView {
         id: panelExposure
         model: modelExposure
-        selectedItem: settings.mode.exposure
+        property var selectedItem: settings.mode.exposure
         rotation: iconRotation
         width: (iconRotation === 90
                 || iconRotation === 270) ? parent.height : parent.width / 2
+
+        signal clicked(string value)
+        delegate: Text {
+            text: name
+            MouseArea {
+                anchors.fill: parent
+                onClicked: panelEffects.clicked(value)
+            }
+        }
 
         onClicked: {
             camera.exposure.setExposureMode(value)
@@ -170,13 +189,22 @@ Item {
         }
     }
 
-    DockedListView {
+    ListView {
         id: panelFlash
         model: modelFlash
-        selectedItem: settings.mode.flash
+        property var selectedItem: settings.mode.flash
         rotation: iconRotation
         width: (iconRotation === 90
                 || iconRotation === 270) ? parent.height : parent.width / 2
+
+        signal clicked(string value)
+        delegate: Text {
+            text: name
+            MouseArea {
+                anchors.fill: parent
+                onClicked: panelEffects.clicked(value)
+            }
+        }
 
         onClicked: {
             camera.flash.setFlashMode(value)
@@ -185,13 +213,22 @@ Item {
         }
     }
 
-    DockedListView {
+    ListView {
         id: panelWhiteBalance
         model: modelWhiteBalance
-        selectedItem: settings.mode.whiteBalance
+        property var selectedItem: settings.mode.whiteBalance
         rotation: iconRotation
         width: (iconRotation === 90
                 || iconRotation === 270) ? parent.height : parent.width / 2
+
+        signal clicked(string value)
+        delegate: Text {
+            text: name
+            MouseArea {
+                anchors.fill: parent
+                onClicked: panelEffects.clicked(value)
+            }
+        }
 
         onClicked: {
             camera.imageProcessing.setWhiteBalanceMode(value)
@@ -200,13 +237,22 @@ Item {
         }
     }
 
-    DockedListView {
+    ListView {
         id: panelFocus
         model: modelFocus
-        selectedItem: settings.mode.focus
+        property var selectedItem: settings.mode.focus
         rotation: iconRotation
         width: (iconRotation === 90
                 || iconRotation === 270) ? parent.height : parent.width / 2
+
+        signal clicked(string value)
+        delegate: Text {
+            text: name
+            MouseArea {
+                anchors.fill: parent
+                onClicked: panelEffects.clicked(value)
+            }
+        }
 
         onClicked: {
             setFocusMode(value)
@@ -214,13 +260,22 @@ Item {
         }
     }
 
-    DockedListView {
+    ListView {
         id: panelIso
         model: modelIso
-        selectedItem: settings.mode.iso
+        property var selectedItem: settings.mode.iso
         rotation: iconRotation
         width: (iconRotation === 90
                 || iconRotation === 270) ? parent.height : parent.width / 2
+
+        signal clicked(string value)
+        delegate: Text {
+            text: name
+            MouseArea {
+                anchors.fill: parent
+                onClicked: panelEffects.clicked(value)
+            }
+        }
 
         onClicked: {
             if (value === 0) {
@@ -233,13 +288,22 @@ Item {
         }
     }
 
-    DockedListView {
+    ListView {
         id: panelResolution
         model: sortedModelResolution
-        selectedItem: settings.resolution(settings.global.captureMode)
+        property var selectedItem: settings.resolution(settings.global.captureMode)
         rotation: iconRotation
         width: (iconRotation === 90
                 || iconRotation === 270) ? parent.height : parent.width / 2
+
+        signal clicked(string value)
+        delegate: Text {
+            text: name
+            MouseArea {
+                anchors.fill: parent
+                onClicked: panelEffects.clicked(value)
+            }
+        }
 
         onClicked: {
             settings.mode.resolution = settings.sizeToStr(value)
@@ -253,13 +317,22 @@ Item {
         }
     }
 
-    DockedListView {
+    ListView {
         id: panelStorage
         model: modelStorage
-        selectedItem: settings.global.storagePath
+        property var selectedItem: settings.global.storagePath
         rotation: iconRotation
         width: (iconRotation === 90
                 || iconRotation === 270) ? parent.height : parent.width / 2
+
+        signal clicked(string value)
+        delegate: Text {
+            text: name
+            MouseArea {
+                anchors.fill: parent
+                onClicked: panelEffects.clicked(value)
+            }
+        }
 
         onClicked: {
             settings.global.storagePath = value
@@ -271,35 +344,34 @@ Item {
         }
     }
 
-    DockedPanel {
+    Pane {
         id: panelGeneral
-        modal: true
-        animationDuration: 250
+        //modal: true
+        //animationDuration: 250
         width: (iconRotation === 90
                 || iconRotation === 270) ? parent.height : parent.width / 2
         height: parent.height
         z: 99
-        dock: Dock.Left
+        //dock: Dock.Left
         clip: true
         rotation: iconRotation
 
         Rectangle {
             anchors.fill: parent
-            color: Theme.colorScheme === Theme.LightOnDark ? "black" : "white"
+            color: "black"
             opacity: 0.7
 
-            SilicaFlickable {
+            Flickable {
                 anchors.fill: parent
-                anchors.margins: Theme.paddingMedium
+                anchors.margins: 60 // Theme.paddingMedium
                 contentHeight: mainColumn.height
-                VerticalScrollDecorator {
-                }
+
                 Column {
                     id: mainColumn
                     width: parent.width
                     height: childrenRect.height
-                    spacing: Theme.paddingMedium
-                    TextSwitch {
+                    spacing: 60 // Theme.paddingMedium
+                    Switch {
                         id: zoomSwitch
                         text: qsTr("Swap zoom controls")
                         checked: settings.global.swapZoomControl
@@ -331,22 +403,12 @@ Item {
                             return 0
                         }
 
-                        label: qsTr("Grid:")
+                        displayText: qsTr("Grid:")
                         currentIndex: findIndex(settings.global.gridMode)
 
-                        menu: ContextMenu {
-                            Repeater {
-                                model: gridSwitch.grids
+                        model: gridSwitch.grids
 
-                                delegate: MenuItem {
-                                    text: modelData["name"]
-
-                                    onClicked: {
-                                        settings.global.gridMode = modelData["id"]
-                                    }
-                                }
-                            }
-                        }
+                        onActivated: settings.global.gridMode = gridSwitch.grids[index].id
                     }
                 }
             }
@@ -573,7 +635,7 @@ Item {
     Connections {
         target: modelStorage
 
-        onModelReset: {
+        function modelReset() {
             restoreStorage()
         }
     }
