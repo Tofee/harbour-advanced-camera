@@ -7,7 +7,7 @@ import QtSensors 5.15
 import harbour_advanced_camera 1.0
 import "../components/"
 
-Page {
+Item {
     id: page
 
     property alias camera: camera
@@ -704,10 +704,10 @@ Page {
         if (supportedResolutions.length > 0) {
             //TODO find the best resolution for the correct aspect ratio
             //when we fix supportedViewfinderResolutions()
-            return Qt.size(supportedResolutions[supportedResolutions.length-1].height, supportedResolutions[supportedResolutions.length-1].width);
+            return Qt.size(supportedResolutions[supportedResolutions.length-1].width, supportedResolutions[supportedResolutions.length-1].height);
         }
 
-        return Qt.size(window.height, window.width)
+        return Qt.size(window.width, window.height)
     }
 
     function doShutter() {

@@ -61,6 +61,7 @@ Item {
                 return res
             }
         }
+        console.log("resolution not valid, fallback to default resolution");
         return modelResolution.defaultResolution(mode)
     }
 }
