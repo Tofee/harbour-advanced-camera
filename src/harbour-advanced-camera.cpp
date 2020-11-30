@@ -5,6 +5,7 @@
 #include <QQuickView>
 #include <QGuiApplication>
 #include <QQmlContext>
+#include <QQmlEngine>
 #include <QQuickItem>
 #include <QSortFilterProxyModel>
 
@@ -42,6 +43,9 @@ int main(int argc, char *argv[])
 
     ResourceHandler handler;
     handler.acquire();
+
+    view->engine()->addImportPath("../luneos-components/modules");
+    view->engine()->addImportPath("../luneos-components/test/imports");
 
     view->rootContext()->setContextProperty("modelResolution", &resolutionModel);
     view->rootContext()->setContextProperty("sortedModelResolution", &sortedResolutionModel);

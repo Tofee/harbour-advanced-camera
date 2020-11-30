@@ -1,9 +1,12 @@
-import QtQuick 2.5
+import QtQuick 2.15
+import QtQuick.Controls 2.15
 import Sailfish.Silica 1.0
-import QtMultimedia 5.6
+import QtMultimedia 5.15
 import Nemo.Thumbnailer 1.0
 import uk.co.piggz.harbour_advanced_camera 1.0
+
 import "../components/"
+import "../theme"
 
 Page {
     id: galleryPage
@@ -44,13 +47,13 @@ Page {
 
         visible: true
         icon.source: "image://theme/icon-m-close"
-        size: Theme.itemSizeMedium
+        radius: Theme.itemSizeMedium
 
         anchors {
             top: parent.top
-            topMargin: 60 // Theme.paddingMedium
+            topMargin: Theme.paddingMedium
             right: parent.right
-            rightMargin: 60 // Theme.paddingMedium
+            rightMargin: Theme.paddingMedium
         }
 
         onClicked: {
@@ -67,18 +70,18 @@ Page {
         id: rowBottom
 
         visible: showButtons
-        spacing: 60 // Theme.paddingMedium
+        spacing: Theme.paddingMedium
         anchors {
             horizontalCenter: parent.horizontalCenter
             bottom: parent.bottom
-            bottomMargin: 60 // Theme.paddingMedium
+            bottomMargin: Theme.paddingMedium
         }
 
         RoundButton {
             id: btnRemove
 
             icon.source: "image://theme/icon-m-delete"
-            size: Theme.itemSizeMedium
+            radius: Theme.itemSizeMedium
 
             function showRemorseItem() {
                 var deleteIndex = gallery.currentIndex
@@ -99,7 +102,7 @@ Page {
             id: btnShare
 
             icon.source: "image://theme/icon-m-share"
-            size: Theme.itemSizeMedium
+            radius: Theme.itemSizeMedium
 
             onClicked: {
                 var filePath = fileList.get(gallery.currentIndex).filePath
@@ -154,7 +157,7 @@ Page {
                 visible: isVideo
                 anchors.centerIn: parent
                 icon.source: "image://theme/icon-m-play"
-                size: Theme.itemSizeMedium
+                radius: Theme.itemSizeMedium
 
                 onClicked: {
                     pageStack.push(Qt.resolvedUrl("VideoPlayer.qml"), {

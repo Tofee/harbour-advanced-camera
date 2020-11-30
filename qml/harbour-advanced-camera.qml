@@ -6,6 +6,8 @@ import "pages"
 Item {
     id: window
 
+    height:1920
+    width: 1080
 
     Settings {
         id: settings

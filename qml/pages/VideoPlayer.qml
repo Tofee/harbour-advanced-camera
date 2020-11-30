@@ -1,8 +1,11 @@
-import QtQuick 2.0
+import QtQuick 2.15
+import QtQuick.Controls 2.15
 import Sailfish.Silica 1.0
 import QtMultimedia 5.6
 import Nemo.KeepAlive 1.2
+
 import "../components/"
+import "../theme"
 
 Page {
     id: videoPage
@@ -68,7 +71,7 @@ Page {
 
                 enabled: controlsOpacity > 0
                 icon.source: "image://theme/icon-m-close"
-                size: Theme.itemSizeMedium
+                radius: Theme.itemSizeMedium
 
                 anchors {
                     top: parent.top
@@ -87,7 +90,7 @@ Page {
 
                 enabled: controlsOpacity > 0
                 icon.source: player.playbackState === MediaPlayer.PlayingState ? "image://theme/icon-m-pause" : "image://theme/icon-m-play"
-                size: Theme.itemSizeMedium
+                radius: Theme.itemSizeMedium
                 anchors.centerIn: parent
 
                 onClicked: {

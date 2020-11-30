@@ -1,6 +1,8 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 
+import "../theme"
+
 Dialog {
     id: panel
 
@@ -32,7 +34,7 @@ Dialog {
 
             delegate: Item {
                 width: ListView.view.width
-                height: 30 // Theme.itemSizeSmall
+                height: Theme.itemSizeSmall
                 highlighted: value === selectedItem
 
                 Label {
@@ -43,7 +45,7 @@ Dialog {
                         rightMargin: Theme.horizontalPageMargin
                         verticalCenter: parent.verticalCenter
                     }
-                    color: highlighted ? Theme.highlightColor : "lightblue" // Theme.primaryColor
+                    color: highlighted ? Theme.highlightColor : Theme.primaryColor
                     text: name
                     truncationMode: TruncationMode.Fade
                 }

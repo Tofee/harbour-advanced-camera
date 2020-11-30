@@ -3,26 +3,30 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import QtMultimedia 5.15
 import harbour_advanced_camera 1.0
+
 import "../components/"
+import "../theme"
 
 Pane {
     visible: false
     anchors.fill: parent
     property int iconRotation: 0
+    /*
     property bool panelOpen: panelEffects.expanded || panelExposure.expanded
                              || panelFlash.expanded
                              || panelWhiteBalance.expanded
                              || panelFocus.expanded || panelIso.expanded
                              || panelResolution.expanded
                              || panelStorage.expanded || panelGeneral.expanded
+    */
 
     Item {
         id: buttonPanel
-        opacity: (panelOpen ? 0 : 1)
-        enabled: !panelOpen
+        opacity: (parent.visible ? 0 : 1)
+        enabled: !parent.visible
 
         height: parent.height
-        width: 2 * 30 /*Theme.itemSizeSmall*/ + 4 * 60 /*Theme.paddingMedium*/
+        width: 2 * Theme.itemSizeSmall + 4 * Theme.paddingMedium
         anchors.left: parent.left
         anchors.top: parent.top
 
@@ -34,8 +38,8 @@ Pane {
         GridLayout {
             id: colButtons
             flow: GridLayout.TopToBottom
-            rowSpacing: 30 // Theme.paddingSmall
-            columnSpacing: 30 // Theme.paddingSmall
+            rowSpacing: Theme.paddingSmall
+            columnSpacing: Theme.paddingSmall
             rows: Math.floor(
                       height / (btnScene.height + rowSpacing)) //using the button height and not theme size incase we change the RoundButton size
 
@@ -43,14 +47,16 @@ Pane {
                 top: parent.top
                 bottom: parent.bottom
                 left: parent.left
-                margins: 30 // Theme.paddingSmall
+                margins: Theme.paddingSmall
             }
 
             RoundButton {
                 id: btnScene
-                icon.color: "lightblue" // Theme.primaryColor
+                icon.color: Theme.primaryColor
                // icon.rotation: iconRotation
-                image: effectIcon()
+                icon.source: effectIcon()
+                icon.height: Theme.itemSizeSmall
+                icon.width: Theme.itemSizeSmall
 
                 onClicked: {
                     panelEffects.show()
@@ -58,8 +64,10 @@ Pane {
             }
             RoundButton {
                 id: btnExposure
-                image: sceneModeIcon()
-                icon.color: "lightblue" // Theme.primaryColor
+                icon.source: sceneModeIcon()
+                icon.height: Theme.itemSizeSmall
+                icon.width: Theme.itemSizeSmall
+                icon.color: Theme.primaryColor
                // icon.rotation: iconRotation
 
                 onClicked: {
@@ -68,7 +76,9 @@ Pane {
             }
             RoundButton {
                 id: btnFocus
-                image: focusIcon()
+                icon.source: focusIcon()
+                icon.height: Theme.itemSizeSmall
+                icon.width: Theme.itemSizeSmall
               //  icon.rotation: iconRotation
 
                 onClicked: {
@@ -77,9 +87,11 @@ Pane {
             }
             RoundButton {
                 id: btnResolution
-                icon.color: "lightblue" // Theme.primaryColor
+                icon.color: Theme.primaryColor
                // icon.rotation: iconRotation
-                image: "../pics/icon-m-resolution.png"
+                icon.source: "../pics/icon-m-resolution.png"
+                icon.height: Theme.itemSizeSmall
+                icon.width: Theme.itemSizeSmall
 
                 onClicked: {
                     panelResolution.show()
@@ -87,7 +99,9 @@ Pane {
             }
             RoundButton {
                 id: btnWhiteBalance
-                image: whiteBalanceIcon()
+                icon.source: whiteBalanceIcon()
+                icon.height: Theme.itemSizeSmall
+                icon.width: Theme.itemSizeSmall
                // icon.rotation: iconRotation
 
                 onClicked: {
@@ -96,7 +110,9 @@ Pane {
             }
             RoundButton {
                 id: btnFlash
-                image: flashIcon()
+                icon.source: flashIcon()
+                icon.height: Theme.itemSizeSmall
+                icon.width: Theme.itemSizeSmall
                // icon.rotation: iconRotation
 
                 onClicked: {
@@ -106,9 +122,11 @@ Pane {
 
             RoundButton {
                 id: btnIso
-                icon.color: "lightblue" // Theme.primaryColor
+                icon.color: Theme.primaryColor
                // icon.rotation: iconRotation
-                image: isoIcon()
+                icon.source: isoIcon()
+                icon.height: Theme.itemSizeSmall
+                icon.width: Theme.itemSizeSmall
 
                 onClicked: {
                     panelIso.show()
@@ -118,9 +136,11 @@ Pane {
             RoundButton {
                 id: btnStorage
                 objectName: "btnStorage"
-                icon.color: "lightblue" // Theme.primaryColor
+                icon.color: Theme.primaryColor
               //  icon.rotation: iconRotation
-                image: "image://theme/icon-m-sd-card"
+                icon.source: "image://theme/icon-m-sd-card"
+                icon.height: Theme.itemSizeSmall
+                icon.width: Theme.itemSizeSmall
 
                 onClicked: {
                     modelStorage.scan("/media/sdcard")
@@ -130,9 +150,11 @@ Pane {
 
             RoundButton {
                 id: btnGeneral
-                icon.color: "lightblue" // Theme.primaryColor
+                icon.color: Theme.primaryColor
                // icon.rotation: iconRotation
-                image: "image://theme/icon-m-developer-mode"
+                icon.source: "image://theme/icon-m-developer-mode"
+                icon.height: Theme.itemSizeSmall
+                icon.width: Theme.itemSizeSmall
 
                 onClicked: {
                     panelGeneral.show()
@@ -363,14 +385,14 @@ Pane {
 
             Flickable {
                 anchors.fill: parent
-                anchors.margins: 60 // Theme.paddingMedium
+                anchors.margins: Theme.paddingMedium
                 contentHeight: mainColumn.height
 
                 Column {
                     id: mainColumn
                     width: parent.width
                     height: childrenRect.height
-                    spacing: 60 // Theme.paddingMedium
+                    spacing: Theme.paddingMedium
                     Switch {
                         id: zoomSwitch
                         text: qsTr("Swap zoom controls")

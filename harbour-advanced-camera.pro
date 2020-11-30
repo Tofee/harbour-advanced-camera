@@ -19,7 +19,9 @@ DISTFILES += translations/*.ts
     
 QML_FILES += qml/harbour-advanced-camera.qml \
     qml/components/*.qml \
-    qml/pages/*.qml
+    qml/pages/*.qml \
+    qml/theme/*.qml \
+    qml/theme/qmldir
 
 
 # German translation is enabled as an example. If you aren't

@@ -1,26 +1,31 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 
+import "../theme"
+
 Item {
     id: iconSwitch
-    property string icon1Source: ""
-    property string icon2Source: ""
+    property alias icon1Source: icon1.icon.source
+    property alias icon2Source: icon2.icon.source
     property string button1Name: ""
     property string button2Name: ""
     signal clicked(var name)
-    property bool _hilighted2: false
 
-    height: width * 2
+    property Item  _highlightedItem: icon1
+
+    height: icon1.height + icon2.height
 
     RoundButton {
         id: icon1
         width: parent.width
         height: width
         z: 0
-        icon.source: icon1Source
+        icon.height: icon1.height
+        icon.width: icon1.width
+        icon.color: _highlightedItem == icon1 ? Theme.highlightBackgroundColor : "transparent"
 
         onClicked: {
-            _hilighted2 = false
+            _highlightedItem = icon1;
             iconSwitch.clicked(button1Name)
         }
     }
@@ -31,27 +36,13 @@ Item {
         height: width
         anchors.top: icon1.bottom
         z: 0
-        icon.source: icon2Source
+        icon.height: icon2.height
+        icon.width: icon2.width
+        icon.color: _highlightedItem == icon2 ? Theme.highlightBackgroundColor : "transparent"
 
         onClicked: {
-            _hilighted2 = true
+            _highlightedItem = icon2;
             iconSwitch.clicked(button2Name)
         }
-    }
-
-    Rectangle {
-        id: highlighter
-        radius: width / 2
-        width: parent.width
-        height: width
-        opacity: 0.5
-        z: 1
-        y: _hilighted2 ? parent.height / 2 : 0
-        Behavior on y {
-            NumberAnimation {
-                duration: 100
-            }
-        }
-        color: "orange" /*Theme.highlightBackgroundColor*/
     }
 }

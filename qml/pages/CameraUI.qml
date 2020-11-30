@@ -6,6 +6,7 @@ import QtSensors 5.15
 
 import harbour_advanced_camera 1.0
 import "../components/"
+import "../theme"
 
 Item {
     id: page
@@ -94,8 +95,8 @@ Item {
     Camera {
         id: camera
 
-        cameraState: page._completed
-                     && !page._cameraReload ? Camera.ActiveState : Camera.UnloadedState
+        cameraState: (page._completed
+                      && !page._cameraReload) ? Camera.ActiveState : Camera.UnloadedState
 
         imageProcessing.colorFilter: CameraImageProcessing.ColorFilterNone
         imageProcessing.denoisingLevel: 1
@@ -115,6 +116,7 @@ Item {
         }
 
         flash.mode: Camera.FlashOff
+        digitalZoom: 1.0
 
         imageCapture {
             onImageCaptured: {
@@ -191,10 +193,6 @@ Item {
             }
 
             if (cameraStatus === Camera.ActiveStatus && _loadParameters) {
-                if (zoomSlider.maximumValue != camera.maximumDigitalZoom) {
-                    zoomSlider.maximumValue = camera.maximumDigitalZoom
-                }
-
                 if (settings.global.captureMode === "video") {
                     camera.captureMode = Camera.CaptureVideo
                     btnModeSwitch._hilighted2 = true
@@ -206,6 +204,7 @@ Item {
                 settingsOverlay.setMode(settings.global.captureMode)
 
                 camera.viewfinder.resolution = getNearestViewFinderResolution()
+                console.log("New viewfinder resolution: " + camera.viewfinder.resolution);
                 applySettings()
 
                 lblResolution.forceUpdate = !lblResolution.forceUpdate
@@ -238,8 +237,8 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
             width: parent.width * 0.75
-            property real minimumValue: 1
-            property real maximumValue: camera.maximumDigitalZoom
+            from: 1
+            to: camera.maximumDigitalZoom
             value: camera.digitalZoom
             stepSize: zoomStepSize
             rotation: {
@@ -255,6 +254,7 @@ Item {
             }
 
             onValueChanged: {
+                console.log("camera.digitalZoom = "+camera.digitalZoom+", changing to: "+value);
                 if (value != camera.digitalZoom)
                     camera.digitalZoom = value
             }
@@ -263,7 +263,7 @@ Item {
                 target: camera
 
                 function digitalZoomChanged() {
-                    zoomSlider.value = camera.digitalZoom
+                   // zoomSlider.value = camera.digitalZoom
                 }
             }
         }
@@ -283,13 +283,14 @@ Item {
 
             anchors.verticalCenter: parent.verticalCenter
             anchors.right: parent.right
-            anchors.rightMargin: 60 // Theme.paddingMedium
+            anchors.rightMargin: Theme.paddingMedium
 
-            size: 100 //Theme.itemSizeLarge
+            icon.height: Theme.itemSizeLarge
+            icon.width: Theme.itemSizeLarge
             rotation: page.controlsRotation
 
-            image: shutterIcon()
-            anchors.margins: 30 // Theme.paddingSmall
+            icon.source: shutterIcon()
+            anchors.margins: Theme.paddingSmall
             onClicked: doShutter()
         }
 
@@ -339,13 +340,13 @@ Item {
                     return 0
             }
 
-            spacing: 60 // Theme.paddingMedium
+            spacing: Theme.paddingMedium
             rotation: page.controlsRotation
 
             Label {
                 property bool forceUpdate: false
                 id: lblResolution
-                color: "lightgray" // Theme.lightPrimaryColor
+                color: Theme.lightPrimaryColor
                 text: (forceUpdate
                        || !forceUpdate) ? settings.sizeToStr(
                                               (settings.global.captureMode === "video" ? camera.videoRecorder.resolution : camera.imageCapture.resolution)) : ""
@@ -354,7 +355,7 @@ Item {
             Label {
                 id: lblRecordTime
                 visible: settings.global.captureMode === "video"
-                color: "lightgray" // Theme.lightPrimaryColor
+                color: Theme.lightPrimaryColor
                 //text: Qt.formatDateTime(new Date(camera.videoRecorder.duration), "hh:mm:ss") //Doest work as return 01:00:00 for 0
                 text: msToTime(camera.videoRecorder.duration)
             }
@@ -372,14 +373,14 @@ Item {
             enabled: visible
 
             anchors.top: btnCameraSwitch.bottom
-            anchors.bottomMargin: 60 // Theme.paddingMedium
+            anchors.bottomMargin: Theme.paddingMedium
             anchors.right: parent.right
-            anchors.rightMargin: 60 // Theme.paddingMedium
+            anchors.rightMargin: Theme.paddingMedium
             rotation: page.controlsRotation
 
-            size: 30 // Theme.itemSizeSmall
-
-            image: "image://theme/icon-m-image"
+            icon.height: Theme.itemSizeSmall
+            icon.width: Theme.itemSizeSmall
+            icon.source: "image://theme/icon-m-image"
 
             onClicked: {
                 camera.stop()
@@ -391,18 +392,20 @@ Item {
 
         RoundButton {
             id: btnCameraSwitch
-            icon.source: "image://theme/icon-camera-switch"
+            icon.height: Theme.itemSizeSmall
+            icon.width: Theme.itemSizeSmall
+            icon.source: "../pics/theme/icon-camera-switch.svg"
             visible: settings.global.cameraCount > 1
             rotation: page.controlsRotation
             anchors {
                 top: parent.top
-                topMargin: 60 // Theme.paddingMedium
+                topMargin: Theme.paddingMedium
                 right: parent.right
-                rightMargin: 60 // Theme.paddingMedium
+                rightMargin: Theme.paddingMedium
             }
             onClicked: {
                 console.log("Setting temp resolution")
-                camera.imageCapture.setResolution(settings.strToSize("320x240"))
+                camera.imageCapture.setResolution(settings.strToSize("640x480"))
                 camera.stop()
                 _loadParameters = false
                 settings.global.cameraId = settings.global.cameraId
@@ -414,16 +417,15 @@ Item {
         IconSwitch {
             id: btnModeSwitch
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: 60 // Theme.paddingMedium
+            anchors.bottomMargin: Theme.paddingMedium
             anchors.right: parent.right
             anchors.rightMargin: (rotation === 90
-                                  || rotation === 270) ? 100 /* Theme.paddingLarge */
-                                                         * 2 : 60 /* Theme.paddingMedium */
+                                  || rotation === 270) ? Theme.paddingLarge*2 : Theme.paddingMedium
             rotation: page.controlsRotation
-            width: 30 // Theme.itemSizeSmall
+            width: Theme.itemSizeSmall
 
-            icon1Source: "image://theme/icon-camera-camera-mode"
-            icon2Source: "image://theme/icon-camera-video"
+            icon1Source: "../pics/theme/icon-camera-camera-mode.png"
+            icon2Source: "../pics/theme/icon-camera-video.png"
             button1Name: "image"
             button2Name: "video"
 
@@ -763,12 +765,12 @@ Item {
 
     function shutterIcon() {
         if (camera.captureMode === Camera.CaptureStillImage) {
-            return "image://theme/icon-camera-shutter"
+            return "../pics/theme/icon-camera-shutter.svg"
         } else {
             if (camera.videoRecorder.recorderStatus === CameraRecorder.RecordingStatus) {
-                return "image://theme/icon-camera-video-shutter-off"
+                return "../pics/theme/icon-camera-video-shutter-off.png"
             } else {
-                return "image://theme/icon-camera-video-shutter-on"
+                return "../pics/theme/icon-camera-video-shutter-on.png"
             }
         }
     }
